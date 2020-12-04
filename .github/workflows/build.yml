@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: action/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Download built binaries for all platforms
         uses: actions/download-artifact@v2
