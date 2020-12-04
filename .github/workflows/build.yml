@@ -2,19 +2,15 @@ name: Build the multi-platform NPM package.
 on:
   workflow_dispatch:
 
-variables:
-  - name: project
-    value: proggy
-  - name: dotnetver
-    value: 5.0.x
-  - name: npmproj
-    value: npmpk
-  - name: runtimeids
-    value: linux-x64 osx-x64 win-x64 win-x86
+env:
+  DOTNET_PROJECT: proggy
+  DOTNET_VERSION: 5.0.x
+  NPM_PACKAGE_PROJECT: npmpk
+  RUNTIME_IDS: linux-x64 osx-x64 win-x64 win-x86
 
 jobs:
   build:
-    name: Builds the '${{ variables.project }}' project for all supported platforms.
+    name: Builds the '${{ env.DOTNET_PROJECT }}' project for all supported platforms.
     runs-on: ubuntu-latest
 
     steps:
@@ -22,19 +18,19 @@ jobs:
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ variables.dotnetver }}
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Build the '${{ variables.project }}' project.
-        run: ./build.sh ${{ variables.runtimeids }}
+      - name: Build the '${{ env.DOTNET_PROJECT }}' project.
+        run: ./build.sh ${{ env.RUNTIME_IDS }}
 
       - name: Assemble the NPM package
         run: |
-          cd ${{ variables.npmproj }}
+          cd ${{ env.NPM_PACKAGE_PROJECT }}
           npm pack
 
       - name: Upload NPM package
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ varialbes.project }}'s NPM package
-          path: npmpk/${{ variables.project }}-*.tgz
+          name: ${{ varialbes.DOTNET_PROJECT }}'s NPM package
+          path: npmpk/${{ env.DOTNET_PROJECT }}-*.tgz
           if-no-files-found: error
