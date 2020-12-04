@@ -1,63 +1,40 @@
 name: Build the multi-platform NPM package.
 on:
   workflow_dispatch:
+
+variables:
+  - name: project
+    value: proggy
+  - name: dotnetver
+    value: 5.0.x
+  - name: npmproj
+    value: npmpk
+  - name: runtimeids
+    value: linux-x64 osx-x64 win-x64 win-x86
+
 jobs:
   build:
-    name: Builds the project on the ${{ matrix.os }} platform.
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+    name: Builds the '${{ variables.project }}' project for all supported platforms.
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: ${{ variables.dotnetver }}
 
-      - name: Build proggy on ${{ matrix.os }}
-        run: dotnet build proggy -c release
-
-      - name: Package dist files
-        run: tar --create --auto-compress --verbose --directory=proggy/bin/release/net5.0 --file=binaries-${{ matrix.os }}.tar.gz .
-
-      - name: Put away dist files for ${{ matrix.os }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: binaries
-          path: binaries-${{ matrix.os }}.tar.gz
-          if-no-files-found: error
-
-  pack:
-    name: Builds the multi-platform NPM package.
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Download built binaries for all platforms
-        uses: actions/download-artifact@v2
-        with:
-          name: binaries
-
-      - name: Deploy binaries on platform directories
-        run: |
-          mkdir npmpk/platforms
-          for plat in win:windows-latest mac:macos-latest linux:ubuntu-latest; do
-           mkdir npmpk/platforms/${plat%:*}
-           tar --extract --auto-compress --verbose --directory=npmpk/platforms/${plat%:*} --file=binaries-${plat#*:}.tar.gz
-          done
+      - name: Build the '${{ variables.project }}' project.
+        run: ./build.sh ${{ variables.runtimeids }}
 
       - name: Assemble the NPM package
         run: |
-          cd npmpk
+          cd ${{ variables.npmproj }}
           npm pack
 
       - name: Upload NPM package
         uses: actions/upload-artifact@v2
         with:
-          name: NPM package
-          path: npmpk/proggy-*.tgz
+          name: ${{ varialbes.project }}'s NPM package
+          path: npmpk/${{ variables.project }}-*.tgz
           if-no-files-found: error
