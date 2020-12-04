@@ -2,15 +2,9 @@ name: Build the multi-platform NPM package.
 on:
   workflow_dispatch:
 
-env:
-  DOTNET_PROJECT: proggy
-  DOTNET_VERSION: 5.0.x
-  NPM_PACKAGE_PROJECT: npmpk
-  RUNTIME_IDS: linux-x64 osx-x64 win-x64 win-x86
-
 jobs:
   build:
-    name: Builds the '${DOTNET_PROJECT}' project for all supported platforms.
+    name: Builds the project for all supported platforms.
     runs-on: ubuntu-latest
 
     steps:
@@ -18,19 +12,19 @@ jobs:
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${DOTNET_VERSION}
+          dotnet-version: 5.0.x
 
-      - name: Build the '${DOTNET_PROJECT}' project.
-        run: ./build.sh ${RUNTIME_IDS}
+      - name: Run the build script.
+        run: ./build.sh
 
       - name: Assemble the NPM package
         run: |
-          cd ${NPM_PACKAGE_PROJECT}
+          cd npmpk
           npm pack
 
-      - name: Upload NPM package
+      - name: Upload the assembled NPM package as a workflow artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${DOTNET_PROJECT}'s NPM package
-          path: npmpk/${DOTNET_PROJECT}-*.tgz
+          name: NPM package
+          path: npmpk/proggy-*.tgz
           if-no-files-found: error
