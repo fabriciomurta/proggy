@@ -1,0 +1,31 @@
+{
+  "name": "proggy",
+  "version": "0.1.0",
+  "description": "Test of multi-platform distribution of NPM packages.",
+  "main": "proggy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "test",
+    "multiplatform",
+    "npm",
+    "package",
+    "windows",
+    "osx",
+    "mac"
+  ],
+  "author": "Fabricio Murta",
+  "license": "CC-PDDC",
+  "build": {
+    "extrafiles": [
+      {
+        "from": "resources/${os}",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}
