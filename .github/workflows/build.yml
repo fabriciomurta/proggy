@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    name: Builds the '${{ env.DOTNET_PROJECT }}' project for all supported platforms.
+    name: Builds the '${DOTNET_PROJECT}' project for all supported platforms.
     runs-on: ubuntu-latest
 
     steps:
@@ -18,19 +18,19 @@ jobs:
 
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: ${DOTNET_VERSION}
 
-      - name: Build the '${{ env.DOTNET_PROJECT }}' project.
-        run: ./build.sh ${{ env.RUNTIME_IDS }}
+      - name: Build the '${DOTNET_PROJECT}' project.
+        run: ./build.sh ${RUNTIME_IDS}
 
       - name: Assemble the NPM package
         run: |
-          cd ${{ env.NPM_PACKAGE_PROJECT }}
+          cd ${NPM_PACKAGE_PROJECT}
           npm pack
 
       - name: Upload NPM package
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ varialbes.DOTNET_PROJECT }}'s NPM package
-          path: npmpk/${{ env.DOTNET_PROJECT }}-*.tgz
+          name: ${DOTNET_PROJECT}'s NPM package
+          path: npmpk/${DOTNET_PROJECT}-*.tgz
           if-no-files-found: error
