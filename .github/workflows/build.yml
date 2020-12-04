@@ -21,7 +21,7 @@ jobs:
 
       - name: Package dist files
         run:
-          tar --create --auto-compress --verbose --directory=proggy/bin/release --file=binaries-${{ matrix.os }}.tar.gz
+          tar --create --auto-compress --verbose --directory=proggy/bin/release/net5.0 --file=binaries-${{ matrix.os }}.tar.gz .
 
       - name: Put away dist files for ${{ matrix.os }}
         uses: actions/upload-artifact@v2
