@@ -24,11 +24,11 @@ if (process.argv.length > 2) {
 
 var processHandle = spawn(execPath, args);
 processHandle.stdout.on('data', data => {
-    console.log('stdout: ' + data);
+    process.stdout.write(data);
 });
 
 processHandle.stderr.on('data', data => {
-    console.error('stderr: ' + data);
+    process.stderr.write(data);
 });
 
 processHandle.on('exit', (code, signal) => {
