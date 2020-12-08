@@ -29,7 +29,16 @@ for rid in "${ridlist[@]}"; do
  echo "Building for runtime application host: ${rid}..."
  deploy_dest="${deploy_root}/${rid}"
 
- result="$(dotnet publish --runtime ${rid} --configuration Release "${project_dir}" --output "${deploy_dest}" 2>&1)"
+ result="$(
+  dotnet publish \
+   "${project_dir}" \
+   --runtime ${rid} \
+   -p:PublishSingleFile=true \
+   -p:PublishTrimmed=true \
+   --configuration Release \
+   --output "${deploy_dest}" \
+   --nologo \
+   2>&1)"
  retstat="${?}"
 
  if [ "${retstat}" -ne 0 ]; then
