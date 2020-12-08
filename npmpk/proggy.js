@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 console.log('Running console application...');
 
@@ -11,16 +12,28 @@ const path = require('path');
 
 var execPath = path.resolve(path.join(__dirname, './platforms', platform, './proggy'))
 
-var processHandle = spawn(execPath, process.argv);
+var args = [];
+
+if (process.argv.length > 2) {
+    // Skips the two first commandline arguments (which are node executable and
+    // js script path)
+    for (var i=2; i < process.argv.length; i++) {
+        args.push(process.argv[i]);
+    }
+}
+
+var processHandle = spawn(execPath, args);
 processHandle.stdout.on('data', data => {
     console.log('stdout: ' + data);
 });
 
 processHandle.stderr.on('data', data => {
-    console.log('stderr: ' + data);
+    console.error('stderr: ' + data);
 });
 
 processHandle.on('exit', (code, signal) => {
     console.log('Console application exited with status ' + code +
         ' (signal: ' + signal + ').');
+    // Forwards called program exit status.
+    process.exit(code);
 })
