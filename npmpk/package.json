@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Test of multi-platform distribution of NPM packages.",
   "main": "proggy.js",
+  "bin": {
+    "proggy": "proggy.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
